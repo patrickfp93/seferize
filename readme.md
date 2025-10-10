@@ -24,4 +24,4 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.0.0"
+seferize = "1.0.1"

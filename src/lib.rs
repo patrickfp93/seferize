@@ -20,7 +20,7 @@ use syn::{parse_macro_input, Item, LitStr, Ident};
 ///
 /// Isso gera uma constante `&str` com o código do item.
 #[proc_macro_attribute]
-pub fn stringify_item(attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Lê o item e o atributo (se existir)
     let item_ast = parse_macro_input!(item as Item);
 
