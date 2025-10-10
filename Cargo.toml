@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2024"
 description = "Procedural macro for converting Rust code blocks into string constants for reflection or documentation generation."
 keywords = ["proc-macro", "stringify", "reflection", "introspection", "codegen", "syn", "quote"]
-
+license = "MIT"
 
 [lib]
 proc-macro = true
