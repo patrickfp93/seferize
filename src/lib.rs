@@ -1,6 +1,11 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Item, LitStr, Ident};
+use syn::{Attribute, Ident, Item, ItemMacro, LitStr, parse_macro_input, parse_quote};
+
+mod filter;
+use crate::filter::Filter;
+
+
 
 /// Macro que converte um item (struct, impl, trait, etc.)
 /// em uma `&'static str` contendo o código-fonte do item.
@@ -22,8 +27,10 @@ use syn::{parse_macro_input, Item, LitStr, Ident};
 #[proc_macro_attribute]
 pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Lê o item e o atributo (se existir)
-    let item_ast = parse_macro_input!(item as Item);
-
+    let item_copy = item.clone();
+    let original = parse_macro_input!(item as Item).clone();
+    let mut item_ast = parse_macro_input!(item_copy as Item);
+    Filter::remove_self_invocations(&mut item_ast);
     // Converte o item em token stream e string
     let tokens = quote! { #item_ast };
     let code_str = tokens.to_string();
@@ -46,10 +53,9 @@ pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     // Gera novo código: item original + constante de string
-    let expanded = quote! {
-        #item_ast
-
+    let expanded = quote! {        
         pub const #const_ident: &str = #code_str;
+        #original
     };
 
     expanded.into()
