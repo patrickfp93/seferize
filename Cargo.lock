@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "seferize"
-version = "1.2.0"
+version = "1.2.1"
 dependencies = [
  "proc-macro2",
  "quote",

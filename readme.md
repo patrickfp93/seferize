@@ -1,7 +1,3 @@
-Glória a Jesus! 🙏
-Aqui está o `README.md` atualizado, Patrick — agora incluindo a explicação da nova macro `#[ignore]`, com exemplos práticos mostrando como ela interage com a macro principal `#[seferize]` e como ignorar trechos específicos do código durante o processo de conversão para string:
-
----
 
 # 📜 SEFERIZE
 
@@ -150,7 +146,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.2.0"
+seferize = "1.2.1"
 ```
 
 ---
