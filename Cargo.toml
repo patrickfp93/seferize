@@ -1,0 +1,18 @@
+[package]
+name = "seferize"
+version = "1.0.0"
+edition = "2024"
+description = "Procedural macro for converting Rust code blocks into string constants for reflection or documentation generation."
+keywords = ["proc-macro", "stringify", "reflection", "introspection", "codegen", "syn", "quote"]
+
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0.106", features = ["full"] }
+quote = "1.0.41"
+proc-macro2 = "1.0.101"
+
+[package.metadata.doc]
+index = "./readme.md"
