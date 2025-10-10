@@ -10,7 +10,8 @@ It can **automatically generate** a `&'static str` constant with the textual con
 
 ## 🧩 Features
 
-- ✅ Converts entire Rust items (structs, traits, impls, enums, etc.) into strings.  
+- ✅ Converts entire Rust items (structs, traits, impls, enums, etc.) into strings.
+- ✅ Remove your own references in the block.
 - 🧱 Optionally accepts a custom name for the generated string constant.  
 - ⚡ Works at **compile time** — no runtime cost.  
 - 💡 Easy integration with tools that require code serialization, logging, or reflection.  
@@ -24,4 +25,4 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.0.1"
+seferize = "1.1.0"
