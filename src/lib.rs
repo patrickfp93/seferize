@@ -1,36 +1,36 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Attribute, Ident, Item, ItemMacro, LitStr, parse_macro_input, parse_quote};
+use syn::{Ident, Item, LitStr, parse_macro_input};
 
 mod filter;
 use crate::filter::Filter;
 
 
 
-/// Macro que converte um item (struct, impl, trait, etc.)
-/// em uma `&'static str` contendo o código-fonte do item.
+/// Macro that converts an item (struct, impl, trait, etc.)
+/// into a `&'static str` containing the item's source code.
 ///
-/// # Uso:
+/// # Usage:
 /// ```rust
-/// use stringify_item_macro::stringify_item;
+/// use seferize::stringify;
 ///
-/// #[stringify_item] // usa nome padrão: _CODE_<ident>
+/// #[stringify] // uses default name: _CODE_<ident>
 /// struct Example {
-///     a: i32,
+/// a: i32,
 /// }
 ///
-/// #[stringify_item("MY_CONST")]
+/// #[stringify("MY_CONST")]
 /// trait MyTrait {}
 /// ```
 ///
-/// Isso gera uma constante `&str` com o código do item.
+/// This generates a constant `&str` with the item's code.
 #[proc_macro_attribute]
 pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Lê o item e o atributo (se existir)
     let item_copy = item.clone();
     let original = parse_macro_input!(item as Item).clone();
     let mut item_ast = parse_macro_input!(item_copy as Item);
-    Filter::remove_self_invocations(&mut item_ast);
+    let _ = Filter::remove_self_invocations(&mut item_ast);
     // Converte o item em token stream e string
     let tokens = quote! { #item_ast };
     let code_str = tokens.to_string();
@@ -59,4 +59,26 @@ pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     expanded.into()
+}
+
+/// Macro causes the #[stringify] macro to ignore some item like:
+/// module, trait, struct, etc.
+///
+/// # Usage:
+/// ```rust
+/// use seferize::*;
+///
+/// #[stringify]
+/// mod module{
+///     #[ignore]
+///     const a : u32= 1;
+///     //...
+/// }
+/// 
+/// ```
+/// 
+/// This filters out items that shouldn't be in the `&str` constant..
+#[proc_macro_attribute]
+pub fn ignore(_: TokenStream, item: TokenStream) -> TokenStream {
+    item
 }
