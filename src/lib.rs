@@ -1,11 +1,13 @@
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 use syn::{Ident, Item, LitStr, parse_macro_input};
 
 mod filter;
-use crate::filter::Filter;
+use crate::{filter::Filter, util::generate_default_name};
 
+const CONST_DEFAULT_PREFIX : &'static str = "CODE_";
 
+mod util;
 
 /// Macro that converts an item (struct, impl, trait, etc.)
 /// into a `&'static str` containing the item's source code.
@@ -14,7 +16,7 @@ use crate::filter::Filter;
 /// ```rust
 /// use seferize::stringify;
 ///
-/// #[stringify] // uses default name: _CODE_<ident>
+/// #[stringify] // uses default name: CODE_<ident>
 /// struct Example {
 /// a: i32,
 /// }
@@ -42,13 +44,7 @@ pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
         Ident::new(&lit.value(), lit.span())
     } else {
         // Gera nome padrão com base no identificador do item
-        let default_name = match &item_ast {
-            Item::Struct(s) => format!("_CODE_{}", s.ident),
-            Item::Enum(e) => format!("_CODE_{}", e.ident),
-            Item::Trait(t) => format!("_CODE_{}", t.ident),
-            Item::Impl(_) => "_CODE_IMPL".to_string(),
-            _ => "_CODE_ITEM".to_string(),
-        };
+        let default_name = generate_default_name(&item_ast, CONST_DEFAULT_PREFIX);
         Ident::new(&default_name, proc_macro2::Span::call_site())
     };
 

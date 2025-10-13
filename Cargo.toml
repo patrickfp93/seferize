@@ -1,6 +1,6 @@
 [package]
 name = "seferize"
-version = "1.2.1"
+version = "1.2.2"
 edition = "2024"
 description = "Procedural macro for converting Rust code blocks into string constants for reflection or documentation generation."
 keywords = ["stringify", "reflection", "introspection","syn", "quote"]

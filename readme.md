@@ -146,7 +146,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.2.1"
+seferize = "1.2.2"
 ```
 
 ---
