@@ -1,5 +1,5 @@
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
+use quote::quote;
 use syn::{Ident, Item, LitStr, parse_macro_input};
 
 mod filter;
