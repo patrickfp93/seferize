@@ -24,7 +24,7 @@ It can **automatically generate** a `&'static str` constant with the textual con
 ## 🧠 How it works
 
 When you annotate an item with `#[seferize]`, it generates a `&'static str` constant containing the **exact Rust source** of that item.
-By default, the generated constant name follows the pattern `SEFER_<ITEM_NAME>` unless another name is provided.
+By default, the generated constant name follows the pattern `CODE_<ITEM_NAME>` unless another name is provided.
 
 ### Example
 
@@ -41,7 +41,7 @@ pub struct User {
 Generates:
 
 ```rust
-pub const SEFER_USER: &str = "pub struct User { id: u32, name: String }";
+pub const CODE_USER: &str = "pub struct User { id: u32, name: String }";
 ```
 
 ---
@@ -65,7 +65,7 @@ mod my_module {
 
     #[ignore]
     pub fn hidden_fn() {
-        println!("This function won't appear in SEFER_MY_MODULE");
+        println!("This function won't appear in CODE_MY_MODULE");
     }
 }
 ```
@@ -73,7 +73,7 @@ mod my_module {
 Result:
 
 ```rust
-pub const SEFER_MY_MODULE: &str = r#"
+pub const CODE_MY_MODULE: &str = r#"
 mod my_module {
     pub struct Visible {
         field: i32,
@@ -99,7 +99,7 @@ fn example() {
 Result:
 
 ```rust
-pub const SEFER_EXAMPLE: &str = r#"
+pub const CODE_EXAMPLE: &str = r#"
 fn example() {
     println!("This line will appear in the stringified output");
 }
