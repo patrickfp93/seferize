@@ -32,22 +32,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "seferize"
-version = "1.3.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "seferize_core",
- "syn",
-]
-
-[[package]]
 name = "seferize_core"
 version = "0.1.0"
 dependencies = [
  "proc-macro2",
  "quote",
- "seferize 1.2.2",
+ "seferize",
  "syn",
 ]
 
