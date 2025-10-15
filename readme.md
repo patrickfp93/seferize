@@ -3,7 +3,7 @@
 
 > *"Revealing the written form of your Rust code."* ✨
 
-A **procedural macro** that converts any Rust item (`struct`, `enum`, `trait`, `impl`, etc.) into its **string representation** at compile time.
+A **procedural macro** that converts any Rust item (`struct`, `enum`, `trait`, `impl`, `fields`,`variants`,`methods`, etc.) into its **string representation** at compile time.
 
 It can **automatically generate** a `&'static str` constant with the textual content of the item — useful for **reflection**, **documentation generation**, **code introspection**, or **debugging macro systems**.
 
@@ -11,7 +11,7 @@ It can **automatically generate** a `&'static str` constant with the textual con
 
 ## 🧩 Features
 
-* ✅ Converts entire Rust items (structs, traits, impls, enums, etc.) into strings.
+* ✅ Converts entire Rust items (structs, traits, impls, enums,fields,variants,methods, etc.) into strings.
 * ✅ Removes self-invoking macros from within the processed item.
 * ✅ Supports the attribute `#[ignore]` to **exclude specific items or blocks** from being stringified.
 * 🧱 Optionally accepts a custom name for the generated string constant.
@@ -146,7 +146,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.2.2"
+seferize = "1.3.0"
 ```
 
 ---

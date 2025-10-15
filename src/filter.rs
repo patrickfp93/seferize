@@ -1,21 +1,24 @@
-use syn::{Attribute, Item, parse_quote};
+use quote::ToTokens;
+use syn::spanned::Spanned;
+use syn::{Attribute, Ident, Item, Meta, parse_quote};
+use syn::{Lit, LitStr};
+
+use crate::util::build_const;
+
 pub struct Filter;
 
-static OCCURRENCES: [&'static str; 4] = [
-    "seferize::stringify",
-    "stringify",
-    "seferize::ignore",
-    "ignore",
-];
+static OCCURRENCES: [&'static str; 2] = ["seferize::stringify", "stringify"];
+
+static IGNORE_OCCURRENCES: [&'static str; 2] = ["seferize::ignore", "ignore"];
 
 impl Filter {
-    pub fn remove_self_invocations(item: &mut Item) -> bool {
+    pub fn remove_self_invocations(item_to_str: &mut Item) -> bool {
         // Se o próprio item tem ignore, sinaliza remoção
-        if Self::should_remove_item(item) {
+        if Self::should_remove_item(item_to_str) {
             return true; // remove este item do bloco externo
         }
 
-        match item {
+        match item_to_str {
             Item::Struct(s) => {
                 s.attrs
                     .retain(|attr| !Self::is_target_macro_attribure(attr));
@@ -92,6 +95,101 @@ impl Filter {
         false
     }
 
+    /// 🔹 Nova função: coleta e gera constantes `#[stringify("NOME")]`
+    pub fn extract_stringified_internal_constants(item: &Item) -> Vec<Item> {
+        let mut consts = Vec::new();
+
+        match item {
+            Item::Struct(s) => {
+                // Extrai a tag da struct, se houver
+                /*for attr in &s.attrs {
+                    if let Some(name) = Self::extract_stringify_name(attr,&s.ident.to_string()) {
+                        let content = s.to_token_stream().to_string();
+                        consts.push(build_const(&name, &content));
+                    }
+                }*/
+
+                // Extrai as tags dos fields
+                for (index ,field) in s.fields.iter().enumerate() {
+                    let name = if let Some(ident) = &field.ident{
+                        ident.to_string()
+                    }else{
+                        format!("field_{}",index.to_string())
+                    };
+                    for attr in &field.attrs {
+                        if let Some(name) = Self::extract_stringify_name(attr, &name) {
+                            let content = field.to_token_stream().to_string();
+                            consts.push(build_const(&name, &content));
+                        }
+                    }
+                }
+            }
+
+            Item::Impl(i) => {
+                /*for attr in &i.attrs {
+                    if let Some(name) = Self::extract_stringify_name(attr) {
+                        let content = i.to_token_stream().to_string();
+                        consts.push(build_const(&name, &content));
+                    }
+                }*/
+
+                // Para cada método dentro do impl
+                for impl_item in &i.items {
+                    if let syn::ImplItem::Fn(f) = impl_item {
+                        let name = f.sig.ident.to_string();
+                        for attr in &f.attrs {
+                            if let Some(name) = Self::extract_stringify_name(attr,&name) {
+                                let content = f.to_token_stream().to_string();
+                                consts.push(build_const(&name, &content));
+                            }
+                        }
+                    }
+                }
+            }
+
+            Item::Enum(e) => {
+                // Extrai a tag do enum, se houver
+                /*for attr in &e.attrs {
+                    if let Some(name) = Self::extract_stringify_name(attr) {
+                        let content = e.to_token_stream().to_string();
+                        consts.push(build_const(&name, &content));
+                    }
+                }*/
+
+                // Extrai as tags das variantes
+                for variant in &e.variants {
+                    for attr in &variant.attrs {
+                        let name = variant.ident.to_string();
+                        if let Some(name) = Self::extract_stringify_name(attr,&name) {
+                            let content = variant.to_token_stream().to_string();
+                            consts.push(build_const(&name, &content));
+                        }
+                    }
+                }
+            }
+
+            _ => {}
+        }
+
+        consts
+    }
+
+    fn extract_stringify_name(
+        attr: &Attribute,
+        defalt_name : &str
+    ) -> Option<String> {
+        if !attr.path().is_ident("attr") {
+            return None;
+        }
+
+        // 1) Caso comum: #[attr("value")]
+        if let Ok(litstr) = attr.parse_args::<LitStr>() {
+            return Some(litstr.value());
+        } else {
+            return Some(format!("{}{}", super::CONST_DEFAULT_PREFIX, defalt_name));
+        }
+    }
+
     /// Verifica se o item possui "ignore" ou "seferize::ignore" e deve ser removido
     fn should_remove_item(item: &Item) -> bool {
         let attrs = Self::get_item_attributes(item);
@@ -104,9 +202,10 @@ impl Filter {
                 .map(|s| s.ident.to_string())
                 .collect::<Vec<_>>();
             let path = path_segments.join("::");
-            if path == "ignore" || path == "seferize::ignore" {
-                return true; // item inteiro deve ser removido
-            }
+            return IGNORE_OCCURRENCES
+                .iter()
+                .find(|&i_o| *i_o == &path)
+                .is_some();
         }
 
         false
