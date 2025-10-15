@@ -1,5 +1,6 @@
-use quote::ToTokens;
-use syn::{Item, parse_quote};
+use proc_macro2::TokenStream;
+use quote::{ToTokens,quote};
+use syn::{parse_str, Item};
 
 pub fn generate_default_name(item_ast: &Item, prefix: &str) -> String {
     match item_ast {
@@ -23,8 +24,9 @@ pub fn generate_default_name(item_ast: &Item, prefix: &str) -> String {
     }
 }
 
-pub fn build_const(name: &str, content: &str) -> Item {
-    parse_quote! {
+pub fn build_const(name: &str, content: &str) -> TokenStream {
+    let name: TokenStream = parse_str(name).unwrap();
+    quote! {
         pub const #name: &'static str = #content;
     }
 }

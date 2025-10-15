@@ -1,3 +1,4 @@
+use proc_macro2::TokenStream;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 use syn::{Attribute, Ident, Item, Meta, parse_quote};
@@ -98,7 +99,7 @@ impl Filter {
     }
 
     /// 🔹 Nova função: coleta e gera constantes `#[stringify("NOME")]`
-    pub fn extract_stringified_internal_constants(item: &Item) -> Vec<Item> {
+    pub fn extract_stringified_internal_constants(item: &Item) -> Vec<TokenStream> {
         let mut consts = Vec::new();
 
         match item {
