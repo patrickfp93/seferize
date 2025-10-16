@@ -1,7 +1,10 @@
 use proc_macro2::TokenStream;
 use quote::ToTokens;
 use syn::spanned::Spanned;
-use syn::{Attribute, Ident, Item, Meta, parse_quote};
+use syn::{
+    Attribute, Ident, ImplItem, ImplItemConst, ImplItemFn, ImplItemType, Item, ItemImpl, Meta,
+    parse_quote,
+};
 use syn::{Lit, LitStr};
 
 use crate::util::build_const;
@@ -28,9 +31,9 @@ impl Filter {
                 e.attrs
                     .retain(|attr| !Self::is_target_macro_attribure(attr));
                 /*e.variants.retain(|variant| {
-                        variant.attrs.retain(|attr| !Self::is_target_macro_attribure(attr));
-                        true // variantes individuais não removemos ainda
-                    });*/
+                    variant.attrs.retain(|attr| !Self::is_target_macro_attribure(attr));
+                    true // variantes individuais não removemos ainda
+                });*/
             }
             Item::Trait(t) => {
                 t.attrs
@@ -48,32 +51,13 @@ impl Filter {
             Item::Impl(i) => {
                 i.attrs
                     .retain(|attr| !Self::is_target_macro_attribure(attr));
-                i.items.retain(|impl_item| {
-                    match impl_item {
-                        syn::ImplItem::Fn(m) => m
-                            .attrs
-                            .clone()
-                            .retain(|a| !Self::is_target_macro_attribure(a)),
-                        syn::ImplItem::Const(c) => c
-                            .attrs
-                            .clone()
-                            .retain(|a| !Self::is_target_macro_attribure(a)),
-                        syn::ImplItem::Type(t) => t
-                            .attrs
-                            .clone()
-                            .retain(|a| !Self::is_target_macro_attribure(a)),
-                        _ => {}
-                    }
-                    true
-                });
+                Self::remove_ignored_from_impl(i);
             }
             Item::Mod(m) => {
                 m.attrs
                     .retain(|attr| !Self::is_target_macro_attribure(attr));
                 if let Some((_, items)) = &mut m.content {
-                    items.retain(|sub_item| {
-                        !Self::remove_self_invocations(&mut sub_item.clone())
-                    });
+                    items.retain(|sub_item| !Self::remove_self_invocations(&mut sub_item.clone()));
                     // chama recursivamente os sub-itens
                     for sub_item in items {
                         Self::remove_self_invocations(sub_item);
@@ -98,6 +82,19 @@ impl Filter {
         false
     }
 
+    fn remove_ignored_from_impl(i: &mut ItemImpl) {
+        i.items.retain(|impl_item| !match impl_item {
+            ImplItem::Fn(ImplItemFn { attrs, .. })
+            | ImplItem::Const(ImplItemConst { attrs, .. })
+            | ImplItem::Type(ImplItemType { attrs, .. }) => Self::has_ignore_attr(attrs),
+            _ => false,
+        });
+    }
+
+    fn has_ignore_attr(attrs: &[Attribute]) -> bool {
+        attrs.iter().any(|attr| IGNORE_OCCURRENCES.iter().find(|&&i_o|&attr.path().to_token_stream().to_string() == i_o ).is_some()  )
+    }
+
     /// 🔹 Nova função: coleta e gera constantes `#[stringify("NOME")]`
     pub fn extract_stringified_internal_constants(item: &Item) -> Vec<TokenStream> {
         let mut consts = Vec::new();
@@ -106,11 +103,11 @@ impl Filter {
             Item::Struct(s) => {
                 // Extrai a tag da struct, se houver
                 /*for attr in &s.attrs {
-                        if let Some(name) = Self::extract_stringify_name(attr,&s.ident.to_string()) {
-                            let content = s.to_token_stream().to_string();
-                            consts.push(build_const(&name, &content));
-                        }
-                    }*/
+                    if let Some(name) = Self::extract_stringify_name(attr,&s.ident.to_string()) {
+                        let content = s.to_token_stream().to_string();
+                        consts.push(build_const(&name, &content));
+                    }
+                }*/
 
                 // Extrai as tags dos fields
                 for (index, field) in s.fields.iter().enumerate() {
@@ -130,11 +127,11 @@ impl Filter {
 
             Item::Impl(i) => {
                 /*for attr in &i.attrs {
-                        if let Some(name) = Self::extract_stringify_name(attr) {
-                            let content = i.to_token_stream().to_string();
-                            consts.push(build_const(&name, &content));
-                        }
-                    }*/
+                    if let Some(name) = Self::extract_stringify_name(attr) {
+                        let content = i.to_token_stream().to_string();
+                        consts.push(build_const(&name, &content));
+                    }
+                }*/
 
                 // Para cada método dentro do impl
                 for impl_item in &i.items {
@@ -153,11 +150,11 @@ impl Filter {
             Item::Enum(e) => {
                 // Extrai a tag do enum, se houver
                 /*for attr in &e.attrs {
-                        if let Some(name) = Self::extract_stringify_name(attr) {
-                            let content = e.to_token_stream().to_string();
-                            consts.push(build_const(&name, &content));
-                        }
-                    }*/
+                    if let Some(name) = Self::extract_stringify_name(attr) {
+                        let content = e.to_token_stream().to_string();
+                        consts.push(build_const(&name, &content));
+                    }
+                }*/
 
                 // Extrai as tags das variantes
                 for variant in &e.variants {

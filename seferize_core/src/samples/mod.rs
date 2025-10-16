@@ -1,7 +1,3 @@
-pub mod structs;
-pub mod tuple;
-pub mod enumerate;
+pub mod simple_samples;
+pub mod samples_with_ignore;
 
-pub use structs::*;
-pub use tuple::*;
-pub use enumerate::*;

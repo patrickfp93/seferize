@@ -6,9 +6,14 @@ const CONST_DEFAULT_PREFIX: &'static str = "CODE_";
 
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse_quote, parse_str, Ident, Item};
+use syn::{parse_quote, Item};
 use crate::{filter::Filter, util::{build_const, generate_default_name}};
-pub use crate::samples::*;
+pub(crate) use crate::samples::simple_samples::enumerate::*;
+pub(crate) use crate::samples::simple_samples::implemetation::*;
+pub(crate) use crate::samples::simple_samples::structs::*;
+pub(crate) use crate::samples::simple_samples::tuple::*;
+pub(crate) use crate::samples::samples_with_ignore::implemetation::*;
+pub(crate) use crate::samples::samples_with_ignore::module::*;
 
 
 pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
