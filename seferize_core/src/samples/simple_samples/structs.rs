@@ -1,4 +1,4 @@
-
+#[allow(unused)]
 #[seferize::stringify("ORIGINAL_STRUCT_MOD_SAMPLE")]
 pub mod original {
     pub struct MyStruct {
@@ -6,6 +6,7 @@ pub mod original {
         pub field_2: String,
     }
 }
+#[allow(unused)]
 #[seferize::stringify("EXPECTED_STRUCT_MOD_SAMPLE")]
 pub mod expected {
     pub const MY_STRUCT: &'static str = "pub struct MyStruct{pub field_1:usize,pub field_2:String,}";

@@ -1,6 +1,7 @@
-pub use expected::*;
-pub use original::*;
+#[allow(unused)]
+pub use {expected::*,original::*};
 
+#[allow(unused)]
 pub mod original {
 
     #[seferize::stringify("ORIGINAL_MODULE_MOD_SAMPLE_WITH_IGNORE")]
@@ -19,6 +20,7 @@ pub mod original {
     }
 }
 
+#[allow(unused)]
 pub mod expected {
 
     struct Struct();

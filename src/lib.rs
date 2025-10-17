@@ -1,4 +1,5 @@
 use proc_macro::TokenStream;
+use syn::{Ident, LitStr};
 
 /// Macro that converts an item (struct, impl, trait, etc.)
 /// into a `&'static str` containing the item's source code.
@@ -19,8 +20,8 @@ use proc_macro::TokenStream;
 /// This generates a constant `&str` with the item's code.
 #[proc_macro_attribute]
 pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
-    // Lê o item e o atributo (se existir)
-    seferize_core::stringify(attr.into(), item.into()).into()
+    let params = seferize_core::Parameters::new(attr.into(), &item.clone().into()).unwrap();
+    seferize_core::stringify(params, item.into()).into()
 }
 
 /// Macro causes the #[stringify] macro to ignore some item like:

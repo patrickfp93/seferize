@@ -1,6 +1,7 @@
-pub use original::*;
-pub use expected::*;
+#[allow(unused)]
+pub use {original::*,expected::*};
 
+#[allow(unused)]
 pub mod original {
     struct Struct();
 
@@ -17,7 +18,7 @@ pub mod original {
         }
     }
 }
-
+#[allow(unused)]
 pub mod expected {
 
     struct Struct();

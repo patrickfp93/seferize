@@ -1,3 +1,4 @@
+#[allow(unused)]
 pub mod expected {
     #[seferize::stringify("EXPECTED_TUPLE_MOD_SAMPLE")]
     pub mod my_tuple {
@@ -6,6 +7,7 @@ pub mod expected {
         pub struct MyTuple(usize,String);
     }
 }
+#[allow(unused)]
 pub mod original {
     #[seferize::stringify("ORIGINAL_TUPLE_MOD_SAMPLE")]
     pub mod my_tuple {
@@ -13,5 +15,5 @@ pub mod original {
     }
 }
 
-pub use original::*;
-pub use expected::*;
+#[allow(unused)]
+pub use {original::*, expected::*};

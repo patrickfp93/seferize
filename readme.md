@@ -1,4 +1,3 @@
-
 # 📜 SEFERIZE
 
 > *"Revealing the written form of your Rust code."* ✨
@@ -11,10 +10,12 @@ It can **automatically generate** a `&'static str` constant with the textual con
 
 ## 🧩 Features
 
-* ✅ Converts entire Rust items (structs, traits, impls, enums,fields,variants,methods, etc.) into strings.
+* ✅ Converts entire Rust items (structs, traits, impls, enums, fields, variants, methods, etc.) into strings.
 * ✅ Removes self-invoking macros from within the processed item.
 * ✅ Supports the attribute `#[ignore]` to **exclude specific items or blocks** from being stringified.
 * 🧱 Optionally accepts a custom name for the generated string constant.
+* 🔁 Supports **stringification of inner elements** (fields, variants, or methods) using `#[stringify]`.
+* 💬 Accepts both **quoted and unquoted identifiers**: `#[stringify("TEXT")]` or `#[stringify(TEXT)]`.
 * ⚡ Works at **compile time** — no runtime cost.
 * 💡 Easy integration with tools that require code serialization, logging, or reflection.
 * 🕊️ 100% safe and pure Rust.
@@ -42,6 +43,60 @@ Generates:
 
 ```rust
 pub const CODE_USER: &str = "pub struct User { id: u32, name: String }";
+```
+
+---
+
+## 🧱 Using inside structs, enums, and impl blocks
+
+You can also apply `#[stringify]` directly to **fields**, **enum variants**, or **methods** inside an item annotated with `#[seferize]`.
+Each annotated element will generate its own `&'static str` constant alongside the main one.
+
+### Example — inside a struct
+
+```rust
+use seferize::seferize;
+
+#[seferize]
+pub struct ExtractStruct {
+    pub field_1: usize,
+    #[stringify("FIELD_2")]
+    pub field_2: String,
+}
+```
+
+Produces:
+
+```rust
+pub const EXTRACT_STRUCT: &'static str =
+    "pub struct ExtractStruct { pub field_1: usize, pub field_2: String, }";
+
+pub const FIELD_2: &'static str = "pub field_2: String";
+
+pub struct ExtractStruct {
+    pub field_1: usize,
+    pub field_2: String,
+}
+```
+
+The same logic applies to **enum variants** and **impl methods**.
+
+---
+
+## 💬 Attribute flexibility
+
+The `#[stringify]` attribute accepts both **quoted and unquoted identifiers** for naming the generated constant:
+
+```rust
+#[stringify("CUSTOM_NAME")]
+// or
+#[stringify(CUSTOM_NAME)]
+```
+
+Both produce the same result:
+
+```rust
+pub const CUSTOM_NAME: &str = "...";
 ```
 
 ---
@@ -82,30 +137,6 @@ mod my_module {
 "#;
 ```
 
-### Example — ignoring macros
-
-```rust
-use seferize::seferize;
-
-#[seferize]
-fn example() {
-    #[ignore]
-    println!("Ignored!");
-
-    println!("This line will appear in the stringified output");
-}
-```
-
-Result:
-
-```rust
-pub const CODE_EXAMPLE: &str = r#"
-fn example() {
-    println!("This line will appear in the stringified output");
-}
-"#;
-```
-
 ---
 
 ## ⚙️ Advanced usage
@@ -124,7 +155,7 @@ pub enum Event {
 }
 ```
 
-This produces:
+Produces:
 
 ```rust
 pub const CUSTOM_NAME: &str = "pub enum Event { Created, Updated }";
@@ -136,6 +167,8 @@ pub const CUSTOM_NAME: &str = "pub enum Event { Created, Updated }";
 
 * Macros like `seferize::stringify`, `stringify`, `seferize::ignore`, and `ignore` are automatically removed from the item before string generation.
 * Works recursively: if a module, impl block, or nested structure contains ignored items, they’re filtered out as well.
+* Inner attributes marked with `#[stringify]` produce **individual constants** for each field, variant, or method.
+* Supports both `#[stringify(TEXT)]` and `#[stringify("TEXT")]` syntax for flexible usage.
 * Uses the Rust `syn` and `quote` crates for reliable parsing and code regeneration.
 
 ---

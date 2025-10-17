@@ -1,3 +1,4 @@
+#[allow(unused)]
 pub mod expected {
     #[seferize::stringify("EXPECTED_ENUMERATE_MOD_SAMPLE")]
     pub mod my_enumerate {
@@ -7,6 +8,7 @@ pub mod expected {
         }
     }
 }
+#[allow(unused)]
 pub mod original {
     #[seferize::stringify("ORIGINAL_ENUMERATE_MOD_SAMPLE")]
     pub mod my_enumerate {
@@ -16,5 +18,5 @@ pub mod original {
     }
 }
 
-pub use expected::*;
-pub use original::*;
+#[allow(unused)]
+pub use {expected::*, original::*};
