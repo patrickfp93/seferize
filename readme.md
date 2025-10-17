@@ -24,15 +24,15 @@ It can **automatically generate** a `&'static str` constant with the textual con
 
 ## 🧠 How it works
 
-When you annotate an item with `#[seferize]`, it generates a `&'static str` constant containing the **exact Rust source** of that item.
+When you annotate an item with `#[stringify]`, it generates a `&'static str` constant containing the **exact Rust source** of that item.
 By default, the generated constant name follows the pattern `CODE_<ITEM_NAME>` unless another name is provided.
 
 ### Example
 
 ```rust
-use seferize::seferize;
+use seferize::stringify;
 
-#[seferize]
+#[stringify]
 pub struct User {
     id: u32,
     name: String,
@@ -49,15 +49,15 @@ pub const CODE_USER: &str = "pub struct User { id: u32, name: String }";
 
 ## 🧱 Using inside structs, enums, and impl blocks
 
-You can also apply `#[stringify]` directly to **fields**, **enum variants**, or **methods** inside an item annotated with `#[seferize]`.
+You can also apply `#[stringify]` directly to **fields**, **enum variants**, or **methods** inside an item annotated with `#[stringify]`.
 Each annotated element will generate its own `&'static str` constant alongside the main one.
 
 ### Example — inside a struct
 
 ```rust
-use seferize::seferize;
+use seferize::stringify;
 
-#[seferize]
+#[stringify]
 pub struct ExtractStruct {
     pub field_1: usize,
     #[stringify("FIELD_2")]
@@ -110,9 +110,9 @@ This is useful when you want to **skip internal helpers**, **test functions**, o
 ### Example — ignoring items
 
 ```rust
-use seferize::seferize;
+use seferize::stringify;
 
-#[seferize]
+#[stringify]
 mod my_module {
     pub struct Visible {
         field: i32,
@@ -146,9 +146,9 @@ mod my_module {
 You can override the generated name by passing a custom identifier:
 
 ```rust
-use seferize::seferize;
+use seferize::stringify;
 
-#[seferize("CUSTOM_NAME")]
+#[stringify("CUSTOM_NAME")]
 pub enum Event {
     Created,
     Updated,
