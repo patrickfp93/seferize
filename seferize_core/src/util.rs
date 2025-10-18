@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
-use quote::{ToTokens,quote};
-use syn::{parse_str, Item};
+use quote::quote;
+use syn::parse_str;
 
 
 pub fn build_const(name: &str, content: &str) -> TokenStream {
