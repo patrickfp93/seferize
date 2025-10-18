@@ -2,6 +2,9 @@
 name = "seferize_core"
 version = "1.3.1"
 edition = "2024"
+description = "Core of the proc-macro seferize."
+keywords = ["stringify", "reflection", "introspection","syn", "quote"]
+license = "MIT"
 
 [dependencies]
 syn = { version = "2.0.106", features = ["full"] }
@@ -9,3 +12,6 @@ quote = "1.0.41"
 proc-macro2 = "1.0.101"
 seferize = "1.2.2"
 rstest = "0.26.1"
+
+[package.metadata.doc]
+index = "./readme.md"
