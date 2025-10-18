@@ -3,7 +3,7 @@ mod original {
     #[cfg(false)]
     pub struct ExtractStruct {
         pub field_1: usize,
-        #[stringify("FIELD_2")]
+        #[stringify(FIELD_2)]
         pub field_2: String,
     }
 }

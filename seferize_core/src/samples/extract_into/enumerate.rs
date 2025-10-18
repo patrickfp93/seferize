@@ -4,7 +4,7 @@ pub mod original {
     pub mod my_enumerate {
         #[cfg(false)]
         pub enum MyEnumerate {
-            #[stringify("EXTRACT_ENUMARATE_VAR")]Var1,
+            #[stringify(EXTRACT_ENUMARATE_VAR)]Var1,
             Var2,
         }
     }

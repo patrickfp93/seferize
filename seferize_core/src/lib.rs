@@ -39,7 +39,7 @@ pub fn stringify(parameters: Parameters, item: TokenStream) -> TokenStream {
     let code_str = modified_item.to_token_stream().to_string();
 
     // Verifica se o atributo tem um nome fornecido
-    let const_ident = parameters.const_ident(&modified_item);
+    let const_ident = parameters.const_ident(&modified_item.to_token_stream());
 
     let main_const = build_const(&const_ident.to_string(), &code_str);
     // Gera novo código: item original + constante de string
