@@ -68,7 +68,7 @@ pub struct ExtractStruct {
 Produces:
 
 ```rust
-pub const EXTRACT_STRUCT: &'static str =
+pub const CODE_EXTRACT_STRUCT: &'static str =
     "pub struct ExtractStruct { pub field_1: usize, pub field_2: String, }";
 
 pub const FIELD_2: &'static str = "pub field_2: String";
