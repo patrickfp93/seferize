@@ -10,7 +10,7 @@ license = "MIT"
 syn = { version = "2.0.107", features = ["full"] }
 quote = "1.0.41"
 proc-macro2 = "1.0.101"
-seferize_base = { package = "seferize", version = "1.2.2" }
+seferize_base = { git = "https://github.com/patrickfp93/seferize_base.git", tag = "v1.2.2" }
 rstest = "0.26.1"
 
 [package.metadata.doc]
