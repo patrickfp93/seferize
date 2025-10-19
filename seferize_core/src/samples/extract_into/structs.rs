@@ -1,4 +1,4 @@
-#[seferize::stringify("ORIGINAL_EXTRACT_STRUCT_MOD_SAMPLE")]
+#[seferize_base::stringify("ORIGINAL_EXTRACT_STRUCT_MOD_SAMPLE")]
 mod original {            
     #[cfg(false)]
     pub struct ExtractStruct {
@@ -8,7 +8,7 @@ mod original {
     }
 }
 
-#[seferize::stringify("EXPECTED_EXTRACT_STRUCT_MOD_SAMPLE")]
+#[seferize_base::stringify("EXPECTED_EXTRACT_STRUCT_MOD_SAMPLE")]
 pub mod expected {
     pub const EXTRACT_STRUCT: &'static str =
         "pub struct ExtractStruct{pub field_1:usize,pub field_2:String,}";

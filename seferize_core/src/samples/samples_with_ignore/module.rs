@@ -4,7 +4,7 @@ pub use {expected::*,original::*};
 #[allow(unused)]
 pub mod original {
 
-    #[seferize::stringify("ORIGINAL_MODULE_MOD_SAMPLE_WITH_IGNORE")]
+    #[seferize_base::stringify("ORIGINAL_MODULE_MOD_SAMPLE_WITH_IGNORE")]
     mod implemetation {
         mod module {
             #[ignore]
@@ -25,7 +25,7 @@ pub mod expected {
 
     struct Struct();
 
-    #[seferize::stringify("EXPECTED_MODULE_MOD_SAMPLE_WITH_IGNORE")]
+    #[seferize_base::stringify("EXPECTED_MODULE_MOD_SAMPLE_WITH_IGNORE")]
     mod implemetation {
 
         pub const MODULE_WITH_IGNORE: &'static str =
