@@ -179,7 +179,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.3.3"
+seferize = "1.3.4"
 ```
 
 ---
