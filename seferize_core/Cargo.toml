@@ -7,7 +7,7 @@ keywords = ["stringify", "reflection", "introspection","syn", "quote"]
 license = "MIT"
 
 [dependencies]
-syn = { version = "2.0.106", features = ["full"] }
+syn = { version = "2.0.107", features = ["full"] }
 quote = "1.0.41"
 proc-macro2 = "1.0.101"
 seferize_base = { package = "seferize", version = "1.2.2" }
