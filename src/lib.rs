@@ -45,3 +45,33 @@ pub fn stringify(attr: TokenStream, item: TokenStream) -> TokenStream {
 pub fn ignore(_: TokenStream, item: TokenStream) -> TokenStream {
     item
 }
+
+/// `expose_for_tests` is a proc-macro attribute that creates a **public version of a private function**
+/// **only for tests**. The original function stays private.
+///
+/// # Example
+///
+/// ```rust
+/// use expose_for_tests_macro::expose_for_tests;
+///
+///
+/// #[expose_for_tests]
+/// fn hidden(&self) -> i32 {
+///      42
+/// }
+///
+/// #[cfg(test)]
+/// mod tests {
+///     use super::*;
+///
+///     #[test]
+///     fn can_call_hidden() {
+///         // Call the generated public test version
+///         assert_eq!(test_hidden(), 42);
+///     }
+/// }
+/// ```
+#[proc_macro_attribute]
+pub fn expose_for_tests(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    seferize_core::expose_for_tests(_attr.into(), item.into()).into()
+}

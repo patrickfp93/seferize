@@ -2,7 +2,7 @@
 
 > *"Revealing the written form of your Rust code."* ✨
 
-A **procedural macro** that converts any Rust item (`struct`, `enum`, `trait`, `impl`, `fields`,`variants`,`methods`, etc.) into its **string representation** at compile time.
+A **procedural macro** that converts any Rust item (`struct`, `enum`, `trait`, `impl`, `fields`, `variants`, `methods`, etc.) into its **string representation** at compile time.
 
 It can **automatically generate** a `&'static str` constant with the textual content of the item — useful for **reflection**, **documentation generation**, **code introspection**, or **debugging macro systems**.
 
@@ -17,8 +17,8 @@ It can **automatically generate** a `&'static str` constant with the textual con
 * 🔁 Supports **stringification of inner elements** (fields, variants, or methods) using `#[stringify]`.
 * 💬 Accepts both **quoted and unquoted identifiers**: `#[stringify("TEXT")]` or `#[stringify(TEXT)]`.
 * ⚡ Works at **compile time** — no runtime cost.
-* 💡 Easy integration with tools that require code serialization, logging, or reflection.
 * 🕊️ 100% safe and pure Rust.
+* 🧪 **New:** `#[expose_for_tests]` attribute to generate a **public version of private functions only for tests**, keeping the original function private.
 
 ---
 
@@ -49,7 +49,7 @@ pub const CODE_USER: &str = "pub struct User { id: u32, name: String }";
 
 ## 🧱 Using inside structs, enums, and impl blocks
 
-You can also apply `#[stringify]` directly to **fields**, **enum variants**, or **methods** inside an item annotated with `#[stringify]`.
+You can apply `#[stringify]` directly to **fields**, **enum variants**, or **methods** inside an item annotated with `#[stringify]`.
 Each annotated element will generate its own `&'static str` constant alongside the main one.
 
 ### Example — inside a struct
@@ -83,6 +83,40 @@ The same logic applies to **enum variants** and **impl methods**.
 
 ---
 
+## 🧪 Exposing private functions for tests
+
+Use the **`#[expose_for_tests]`** attribute to generate a **public version of a private function** that is only available in test builds (`#[cfg(test)]`).
+The original function stays private and encapsulated.
+
+### Example
+
+```rust
+use seferize::expose_for_tests;
+
+struct MyStruct;
+
+impl MyStruct {
+    #[expose_for_tests]
+    fn hidden(&self) -> i32 {
+        42
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn can_call_hidden() {
+        let s = MyStruct;
+        // Call the public test version
+        assert_eq!(s.test_hidden(), 42);
+    }
+}
+```
+
+---
+
 ## 💬 Attribute flexibility
 
 The `#[stringify]` attribute accepts both **quoted and unquoted identifiers** for naming the generated constant:
@@ -103,9 +137,7 @@ pub const CUSTOM_NAME: &str = "...";
 
 ## 🚫 Ignoring code with `#[ignore]`
 
-You can mark any **item, block, or function** with `#[ignore]` to prevent it from being included in the generated string.
-
-This is useful when you want to **skip internal helpers**, **test functions**, or **macros** that shouldn’t appear in the final output of `seferize`.
+Mark any **item, block, or function** with `#[ignore]` to prevent it from being included in the generated string.
 
 ### Example — ignoring items
 
@@ -125,7 +157,7 @@ mod my_module {
 }
 ```
 
-Result:
+Generates:
 
 ```rust
 pub const CODE_MY_MODULE: &str = r#"
@@ -143,7 +175,7 @@ mod my_module {
 
 ### Custom constant name
 
-You can override the generated name by passing a custom identifier:
+Override the generated name by passing a custom identifier:
 
 ```rust
 use seferize::stringify;
@@ -165,21 +197,22 @@ pub const CUSTOM_NAME: &str = "pub enum Event { Created, Updated }";
 
 ## 🪶 Internal behavior
 
-* Macros like `seferize::stringify`, `stringify`, `seferize::ignore`, and `ignore` are automatically removed from the item before string generation.
-* Works recursively: if a module, impl block, or nested structure contains ignored items, they’re filtered out as well.
-* Inner attributes marked with `#[stringify]` produce **individual constants** for each field, variant, or method.
-* Supports both `#[stringify(TEXT)]` and `#[stringify("TEXT")]` syntax for flexible usage.
-* Uses the Rust `syn` and `quote` crates for reliable parsing and code regeneration.
+* Macros like `seferize::stringify`, `stringify`, `seferize::ignore`, and `ignore` are removed before string generation.
+* Works recursively: modules, impls, or nested structures with ignored items are filtered out.
+* Inner attributes marked with `#[stringify]` produce **individual constants**.
+* `#[stringify(TEXT)]` and `#[stringify("TEXT")]` are both supported.
+* Uses the Rust `syn` and `quote` crates for parsing and regenerating code.
+* `#[expose_for_tests]` clones the original function, makes it `pub` and wraps it in `#[cfg(test)]`.
 
 ---
 
 ## 📦 Installation
 
-Add this to your `Cargo.toml`:
+Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.3.4"
+seferize = "1.4.4"
 ```
 
 ---
