@@ -4,7 +4,7 @@
 
 A **procedural macro** that converts any Rust item (`struct`, `enum`, `trait`, `impl`, `fields`, `variants`, `methods`, etc.) into its **string representation** at compile time.
 
-It can **automatically generate** a `&'static str` constant with the textual content of the item — useful for **reflection**, **documentation generation**, **code introspection**, or **debugging macro systems**.
+It can **automatically generate** a `&'static str` constant with the textual content of the item — useful for **reflection**, **documentation generation**, **code generation tests**,**code introspection**, or **debugging macro systems**.
 
 ---
 
@@ -212,7 +212,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.4.4"
+seferize = "1.5.4"
 ```
 
 ---
