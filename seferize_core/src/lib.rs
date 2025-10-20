@@ -18,6 +18,7 @@ pub(crate) use crate::samples::{
     extract_into::{enumerate::*, implementation::*, structs::*},
     samples_with_ignore::{implemetation::*, module::*},
     simple_samples::{enumerate::*, implemetation::*, structs::*, tuple::*},
+    exposed_methods::simple_methods::*
 };
 use crate::{
     filter::Filter,
@@ -61,7 +62,7 @@ pub fn expose_for_tests(_attr: TokenStream, item: TokenStream) -> TokenStream {
     exposed_fn.sig.ident = fn_name;
     let called_fn = generate_call(&original_fn);
     exposed_fn.block = parse_quote!{
-        #called_fn
+        {#called_fn}
     };
     exposed_fn.vis = parse_quote!(pub);
 
