@@ -1,5 +1,4 @@
 use proc_macro::TokenStream;
-use syn::{Ident, LitStr};
 
 /// Macro that converts an item (struct, impl, trait, etc.)
 /// into a `&'static str` containing the item's source code.
