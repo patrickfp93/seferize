@@ -212,7 +212,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-seferize = "1.5.4"
+seferize = "1.5.5"
 ```
 
 ---
