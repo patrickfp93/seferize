@@ -38,8 +38,8 @@ pub fn stringify(parameters: Parameters, item: TokenStream) -> TokenStream {
         original = modified_item.clone();
     }
     // Converte o item em token stream e string
+    //let code_str = format!("const test &'static str= \"TEST\"\n{}",modified_item.to_token_stream().to_string());
     let code_str = modified_item.to_token_stream().to_string();
-
     // Verifica se o atributo tem um nome fornecido
     let const_ident = parameters.const_ident(&modified_item.to_token_stream());
 
@@ -52,6 +52,7 @@ pub fn stringify(parameters: Parameters, item: TokenStream) -> TokenStream {
         #original
     }
 }
+
 
 pub fn expose_for_tests(_attr: TokenStream, item: TokenStream) -> TokenStream {
     // Parse da função original

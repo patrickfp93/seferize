@@ -13,5 +13,9 @@ proc-macro2 = "1.0.101"
 seferize_base = "1.2.2"
 rstest = "0.26.1"
 
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"
+
 [package.metadata.doc]
 index = "./readme.md"

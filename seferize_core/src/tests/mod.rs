@@ -3,9 +3,17 @@ mod utilities_for_test;
 #[allow(unused)]
 use crate::*;
 use rstest::rstest;
+
+#[cfg(test)]use pretty_assertions as pa;
+
 #[rstest]
 #[case::struture(ORIGINAL_STRUCT_MOD_SAMPLE, EXPECTED_STRUCT_MOD_SAMPLE, "MY_STRUCT")]
 #[case::tuple(ORIGINAL_TUPLE_MOD_SAMPLE, EXPECTED_TUPLE_MOD_SAMPLE, "MY_TUPLE")]
+#[case::implementation_with_ignore(
+    ORIGINAL_IMPL_STRUCT_MOD_SAMPLE_WITH_IGNORE,
+    EXPECTED_IMPL_STRUCT_MOD_SAMPLE_WITH_IGNORE,
+    "IMPL_STRUCT_WITH_IGNORE"
+)]
 #[case::enumerate(
     ORIGINAL_ENUMERATE_MOD_SAMPLE,
     EXPECTED_ENUMERATE_MOD_SAMPLE,
@@ -16,11 +24,7 @@ use rstest::rstest;
     EXPECTED_IMPL_STRUCT_MOD_SAMPLE,
     "IMPL_STRUCT"
 )]
-#[case::implementation_with_ignore(
-    ORIGINAL_IMPL_STRUCT_MOD_SAMPLE_WITH_IGNORE,
-    EXPECTED_IMPL_STRUCT_MOD_SAMPLE_WITH_IGNORE,
-    "IMPL_STRUCT_WITH_IGNORE"
-)]
+
 #[case::module_with_ignore(
     ORIGINAL_MODULE_MOD_SAMPLE_WITH_IGNORE,
     EXPECTED_MODULE_MOD_SAMPLE_WITH_IGNORE,
@@ -60,7 +64,7 @@ fn check_stringify(
 
     let generated = stringify(name_attr_str.into(), original);
 
-    assert_eq!(
+    pa::assert_eq!(
         generated.to_string().replace(" ", ""),
         expected.to_string().replace(" ", "")
     )
@@ -81,5 +85,5 @@ fn check_expose_for_tests(
 
     let generate_method = expose_for_tests(TokenStream::new(), original_method);    
 
-    assert_eq!(generate_method.to_string(),expected_method.to_string())
+    pa::assert_eq!(generate_method.to_string(),expected_method.to_string())
 }

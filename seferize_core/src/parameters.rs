@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::ToTokens;
-use syn::{Attribute, Field, Ident, ImplItem, Item, LitStr, Variant, parse, parse_str, parse2};
+use syn::{Attribute, Field, Ident, ImplItem, Item, LitStr, Variant, parse_str, parse2};
 
 pub struct Parameters {
     const_ident_str: String,

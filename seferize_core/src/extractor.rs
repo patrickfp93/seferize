@@ -1,7 +1,7 @@
 use crate::*;
 use proc_macro2::TokenStream;
 use quote::ToTokens;
-use syn::{Attribute, Item, LitStr};
+use syn::{Attribute, Item};
 
 use crate::util::build_const;
 
